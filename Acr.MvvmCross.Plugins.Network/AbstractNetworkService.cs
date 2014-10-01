@@ -3,11 +3,18 @@ using System.ComponentModel;
 using System.Threading.Tasks;
 using Cirrious.CrossCore;
 using Cirrious.MvvmCross.Plugins.Messenger;
+using Cirrious.MvvmCross.ViewModels;
 
 
 namespace Acr.MvvmCross.Plugins.Network {
-    
-    public abstract class AbstractNetworkService : INetworkService, INotifyPropertyChanged {
+
+    public abstract class AbstractNetworkService : MvxNotifyPropertyChanged, INetworkService
+    {
+
+        public AbstractNetworkService()
+        {
+            this.ShouldAlwaysRaiseInpcOnUserInterfaceThread(true);
+        }
 
         protected void SetStatus(bool connected, bool wifi, bool mobile, bool fireEvent) {
             this.IsConnected = connected;
@@ -34,7 +41,7 @@ namespace Acr.MvvmCross.Plugins.Network {
                     return;
 
                 this.connected = value;
-                this.OnPropertyChanged("IsConnected");
+                this.RaisePropertyChanged(() => IsConnected);
             }
         }
         
@@ -47,7 +54,7 @@ namespace Acr.MvvmCross.Plugins.Network {
                     return;
 
                 this.wifi = value;
-                this.OnPropertyChanged("IsWifi");
+                this.RaisePropertyChanged(() => IsWifi);
             }
         }
 
@@ -60,7 +67,7 @@ namespace Acr.MvvmCross.Plugins.Network {
                     return;
 
                 this.mobile = value;
-                this.OnPropertyChanged("IsMobile");
+                this.RaisePropertyChanged(() => IsMobile);
             }
         }
 
@@ -69,17 +76,6 @@ namespace Acr.MvvmCross.Plugins.Network {
             return Mvx
                 .Resolve<IMvxMessenger>()
                 .Subscribe<NetworkStatusChangedMessage>(action);
-        }
-
-        #endregion
-
-        #region INotifyPropertyChanged Members
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        private void OnPropertyChanged(string propertyName) {
-            if (this.PropertyChanged != null) {
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-            }
         }
 
         #endregion
