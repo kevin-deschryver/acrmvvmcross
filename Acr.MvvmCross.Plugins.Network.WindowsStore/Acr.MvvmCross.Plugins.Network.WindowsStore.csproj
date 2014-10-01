@@ -124,9 +124,15 @@
     <Reference Include="Cirrious.CrossCore.WindowsCommon">
       <HintPath>..\packages\MvvmCross.HotTuna.CrossCore.3.2.1\lib\win81\Cirrious.CrossCore.WindowsCommon.dll</HintPath>
     </Reference>
+    <Reference Include="Cirrious.MvvmCross">
+      <HintPath>..\packages\MvvmCross.HotTuna.MvvmCrossLibraries.3.2.1\lib\win81\Cirrious.MvvmCross.dll</HintPath>
+    </Reference>
     <Reference Include="Cirrious.MvvmCross.Localization, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\MvvmCross.HotTuna.CrossCore.3.2.1\lib\win81\Cirrious.MvvmCross.Localization.dll</HintPath>
+    </Reference>
+    <Reference Include="Cirrious.MvvmCross.WindowsCommon">
+      <HintPath>..\packages\MvvmCross.HotTuna.MvvmCrossLibraries.3.2.1\lib\win81\Cirrious.MvvmCross.WindowsCommon.dll</HintPath>
     </Reference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '12.0' ">

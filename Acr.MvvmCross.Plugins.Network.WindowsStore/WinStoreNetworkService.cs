@@ -19,9 +19,11 @@ namespace Acr.MvvmCross.Plugins.Network.WindowsStore {
         
         private void OnNetworkStatusChanged(object sender) {
             var profiles = NetworkInformation.GetConnectionProfiles();
+            var internetProfile = NetworkInformation.GetInternetConnectionProfile();
             var inet = profiles.Any(x => 
-                x.GetNetworkConnectivityLevel() == NetworkConnectivityLevel.InternetAccess || 
-                x.GetNetworkConnectivityLevel() == NetworkConnectivityLevel.ConstrainedInternetAccess
+                x.GetNetworkConnectivityLevel() == NetworkConnectivityLevel.InternetAccess 
+                ||  x.GetNetworkConnectivityLevel() == NetworkConnectivityLevel.ConstrainedInternetAccess
+                || (internetProfile != null && internetProfile.GetNetworkConnectivityLevel() == NetworkConnectivityLevel.InternetAccess)
             );
             var wifi = profiles.Any(x => x.IsWwanConnectionProfile);
             var mobile = profiles.Any(x => x.IsWwanConnectionProfile);
