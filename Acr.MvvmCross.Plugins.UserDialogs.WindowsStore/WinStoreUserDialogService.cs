@@ -47,6 +47,7 @@ namespace Acr.MvvmCross.Plugins.UserDialogs.WindowsStore
 
         public override void Alert(AlertConfig config)
         {
+            _alertConfig = config;
             AlertPopup(config);
         }
 
