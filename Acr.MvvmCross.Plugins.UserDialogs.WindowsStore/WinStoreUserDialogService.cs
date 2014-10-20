@@ -11,28 +11,36 @@ namespace Acr.MvvmCross.Plugins.UserDialogs.WindowsStore
     public class WinStoreUserDialogService : AbstractUserDialogService
     {
         // TODO: dispatching
+        public override void Login(LoginConfig config)
+        {
+            throw new NotImplementedException();
+        }
 
-        public override void ActionSheet(ActionSheetOptions options)
+        protected override IProgressDialog CreateDialogInstance()
+        {
+            throw new NotImplementedException();
+        }
+
+        public override void ActionSheet(ActionSheetConfig config)
         {
             var input = new InputDialog
             {
                 ButtonsPanelOrientation = Orientation.Vertical
             };
 
-            var buttons = options.Options
+            var buttons = config.Options
                 .Select(x => x.Text)
                 .ToArray();
 
             input
-                .ShowAsync(options.Title, null, buttons)
+                .ShowAsync(config.Title, null, buttons)
                 .ContinueWith(x =>
-                    options
+                    config
                         .Options
                         .Single(y => y.Text == x.Result)
                         .Action()
                 );
         }
-
 
 
         AlertConfig _alertConfig;
@@ -91,16 +99,16 @@ namespace Acr.MvvmCross.Plugins.UserDialogs.WindowsStore
         }
 
 
-        public override void Prompt(string message, Action<PromptResult> promptResult, string title, string okText, string cancelText, string hint)
+        public override void Prompt(PromptConfig config)
         {
             var input = new InputDialog
             {
-                AcceptButton = okText,
-                CancelButton = cancelText,
-                InputText = hint
+                AcceptButton = config.OkText,
+                CancelButton = config.CancelText,
+                InputText = config.Placeholder
             };
             input
-                .ShowAsync(title, message)
+                .ShowAsync(config.Title, config.Message)
                 .ContinueWith(x =>
                 {
                     // TODO: how to get button click for this scenario?
