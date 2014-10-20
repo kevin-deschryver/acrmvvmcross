@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using Windows.UI.Popups;
 using Windows.UI.Xaml.Controls;
 using WinRTXamlToolkit.Controls;
 
@@ -33,33 +34,60 @@ namespace Acr.MvvmCross.Plugins.UserDialogs.WindowsStore
         }
 
 
-        public override void Alert(string message, string title, string okText, Action onOk)
-        {
-            var input = new InputDialog();
 
-            input
-                .ShowAsync(title, message, okText)
-                .ContinueWith(x =>
-                {
-                    if (onOk != null)
-                        onOk();
-                });
+        AlertConfig _alertConfig;
+
+        public override void Alert(AlertConfig config)
+        {
+            AlertPopup(config);
         }
 
-
-        public override void Confirm(string message, Action<bool> onConfirm, string title, string okText, string cancelText)
+        private async void AlertPopup(AlertConfig config)
         {
-            var input = new InputDialog
+            Windows.UI.Popups.MessageDialog msg = new Windows.UI.Popups.MessageDialog(config.Message, config.Title);
+            msg.Commands.Add(new UICommand(config.OkText, new UICommandInvokedHandler(AlertHandler)));
+            msg.DefaultCommandIndex = 1;
+            await msg.ShowAsync();
+        }
+
+        private void AlertHandler(IUICommand command)
+        {
+            if (_alertConfig != null)
             {
-                AcceptButton = okText,
-                CancelButton = cancelText
-            };
-            input
-                .ShowAsync(title, message)
-                .ContinueWith(x =>
-                {
-                    // TODO: how to get button click for this scenario?
-                });
+                _alertConfig.OnOk();
+            }
+        }
+
+        ConfirmConfig _confirmConfig;
+
+        public override void Confirm(ConfirmConfig config)
+        {
+            _confirmConfig = config;
+            ConfirmPopup(config);
+        }
+
+        private async void ConfirmPopup(ConfirmConfig config)
+        {
+            Windows.UI.Popups.MessageDialog msg = new Windows.UI.Popups.MessageDialog(config.Message, config.Title);
+            msg.Commands.Add(new UICommand(config.OkText, new UICommandInvokedHandler(ConfirmHandler)));
+            msg.Commands.Add(new UICommand(config.CancelText, new UICommandInvokedHandler(ConfirmHandler)));
+            msg.DefaultCommandIndex = 1;
+            msg.CancelCommandIndex = 1;
+            await msg.ShowAsync();
+        }
+
+        private void ConfirmHandler(IUICommand command)
+        {
+            var commandLabel = command.Label;
+
+            if (commandLabel == _confirmConfig.OkText)
+            {
+                _confirmConfig.OnConfirm(true);
+            }
+            else if (commandLabel == _confirmConfig.CancelText)
+            {
+                _confirmConfig.OnConfirm(false);
+            }
         }
 
 
@@ -96,9 +124,9 @@ namespace Acr.MvvmCross.Plugins.UserDialogs.WindowsStore
         }
 
 
-        protected override WinStoreProgressDialog CreateProgressDialogInstance()
-        {
-            return new WinStoreProgressDialog();
-        }
+        //protected override WinStoreProgressDialog CreateProgressDialogInstance()
+        //{
+        //    return new WinStoreProgressDialog();
+        //}
     }
 }
